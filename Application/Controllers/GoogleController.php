@@ -58,6 +58,7 @@ class GoogleController extends BaseController
             $authUrl = $client->createAuthUrl();
 //            file_get_contents($authUrl);
         }//else
+        var_dump($authUrl);
 
 
         if(!empty($_SESSION['upload_token_google']['access_token'])){
