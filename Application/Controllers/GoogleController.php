@@ -7,18 +7,16 @@
  */
 
 namespace Application\Controllers;
-use Application\Utils\MySQL;
-use Application\Utils\Request;
+use Application\Service\UserService;
 
-//require_once '../../vendor/google/apiclient/google-api-php-client/apiClient.php';
-//require_once 'includes/google-api-php-client/contrib/apiOauth2Service.php';
-//require_once 'includes/idiorm.php';
-//require_once 'includes/relativeTime.php';
+
 
 class GoogleController extends BaseController
 {
 
     public function AuthAction(){
+
+        $userService = new UserService();
 
         $client = new \Google_Client();
 
@@ -67,9 +65,25 @@ class GoogleController extends BaseController
             $userInfoArray = json_decode($json,true);
 
             var_dump($userInfoArray);
+
+            $findUser = null;
+            if(!empty($userInfoArray)){
+                $findUser = $userService->GetUser("bla1");
+
+                if(!$findUser){
+                    $idUser = $userService->AddUser();
+
+                    $findUser = $userService->GetUser('$idUser');
+                }//if
+
+            }//if
+
+            var_dump("idUser");
+//            var_dump($idUser);
+
         }//if
 
-
+        var_dump($_POST);
 
         ?>
 
