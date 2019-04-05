@@ -11,6 +11,8 @@ namespace Application\Controllers;
 use Bramus\Router\Router;
 use Application\Utils\MySQL;
 
+use \RedBeanPHP\R as R;
+
 class ApplicationController extends BaseController
 {
 
@@ -20,11 +22,14 @@ class ApplicationController extends BaseController
             'cookie_lifetime' => 86400,
         ]);
 
-        MySQL::$db = new \PDO(
-            "mysql:dbname=stasdb;host=127.0.0.1;charset=utf8",
-            "root",
-            ""
-        );
+//        MySQL::$db = new \PDO(
+//            "mysql:dbname=stasdb;host=127.0.0.1;charset=utf8",
+//            "root",
+//            ""
+//        );
+
+        MySQL::$db = R::setup( 'mysql:host=localhost;dbname=stasdb',
+            'root', '' );
 
         $router = new Router();
 
