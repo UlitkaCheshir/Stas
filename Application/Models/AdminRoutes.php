@@ -8,8 +8,7 @@ return array(
         '/authFace' => 'FaceBookController@AuthFaceBook',
     ],
     'post' => [
-
-
+        '/registerUser' => 'UserController@RegisterUser',
     ],
     'delete' => [
 
