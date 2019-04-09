@@ -26,7 +26,6 @@ class UserController extends BaseController
             $this->json(400, array(
                 'code'=>400,
                 'message'=>"Логин неверный",
-                'userl'=>$userLogin
             ));
 
             return;

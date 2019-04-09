@@ -37,35 +37,33 @@ class UserService
         }//if
         else{ // если пользователь просто регистрируеться
 
-            $resultFind  = $this->GetUser($userEmail, $userLogin);
+            $isUser = MySQL::$db->prepare("SELECT * FROM users WHERE userLogin = :userLogin OR userEmail=:userEmail");
+            $isUser->bindParam(':userLogin', $userLogin,\PDO::PARAM_STR);
+            $isUser->bindParam(':userEmail', $userEmail,\PDO::PARAM_STR);
+            $isUser->execute();
 
-           if(!$resultFind){//если пользователь не найден в БД
+            $result = $isUser->fetchAll(\PDO::FETCH_OBJ);
 
-               $bcrypt = new Bcrypt();
-               $bcrypt_version = '2y';
-               $heshPassword = $bcrypt->encrypt($userPassword,$bcrypt_version);
+            if(!$result){
 
-               $user = R::dispense( 'users' );
-               $user->useremail = $userEmail;
-               $user->userlogin = $userLogin;
-               $user->userhash = $userHash;
-               $user->userpassword = $heshPassword;
+                $bcrypt = new Bcrypt();
+                $bcrypt_version = '2y';
+                $heshPassword = $bcrypt->encrypt($userPassword,$bcrypt_version);
 
-               $statusBean = R::load('statususeraccount', $const->statusNOVIP);
-               $statusBean->ownUsers = array($user);
-               R::store($statusBean);
+                $stm = MySQL::$db->prepare("INSERT INTO users VALUES( DEFAULT,  :email , default , :login,  :password , :hash, :status, :type )");
+                $stm->bindParam(':login' , $userLogin , \PDO::PARAM_STR);
+                $stm->bindParam(':email' , $userEmail , \PDO::PARAM_STR);
+                $stm->bindParam(':hash' , $userHash , \PDO::PARAM_STR);
+                $stm->bindParam(':password' , $heshPassword , \PDO::PARAM_STR);
+                $stm->bindParam(':status' , $const->statusNOVIP , \PDO::PARAM_INT);
+                $stm->bindParam(':type' , $userType , \PDO::PARAM_INT);
+                $stm->execute();
 
-               $typeBean = R::load('typeuseraccount', $userType);
-               $typeBean->ownUsers = array($user);
-               R::store($typeBean);
+                return  MySQL::$db->lastInsertId();
 
-               $id = R::store( $user );
-               return $id;
+            }//if
 
-           }//if
-            else{
-                return null;
-            }//else
+            return null;
 
         }//else
 
