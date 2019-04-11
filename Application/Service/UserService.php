@@ -50,7 +50,8 @@ class UserService
                 $bcrypt_version = '2y';
                 $heshPassword = $bcrypt->encrypt($userPassword,$bcrypt_version);
 
-                $stm = MySQL::$db->prepare("INSERT INTO users VALUES( DEFAULT,  :email , default , :login,  :password , :hash, :status, :type )");
+                $stm = MySQL::$db->prepare("INSERT INTO users (userEmail, userName, userLogin, userPassword, userHash, verification, status_id, type_id)
+                                            VALUES(  :email , default , :login,  :password , :hash, false, :status, :type )");
                 $stm->bindParam(':login' , $userLogin , \PDO::PARAM_STR);
                 $stm->bindParam(':email' , $userEmail , \PDO::PARAM_STR);
                 $stm->bindParam(':hash' , $userHash , \PDO::PARAM_STR);

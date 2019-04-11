@@ -67,13 +67,27 @@ class UserController extends BaseController
 
         if($result !== null){ //пользователь добавлен в БД
 
-            //здесь должна быть отправка на почту для аунтефикации
+            $message = new MessageController();
 
-            $this->json(200, array(
-                "code"=>200,
-                'message'=>"Пользователь добавлен",
+            $message->tuneTemplate($userLogin,$heshToken);
+            $mailres = mail($userEmail , $message->verificationSubject,$message->verificationTemplate,$message->header);
 
-            ));
+
+            if($mailres){//если  отправилось сообщение на мыло
+                $this->json(200, array(
+                    "code"=>200,
+                    'message'=>"Пользователь добавлен",
+
+                ));
+            }//if
+            else{////если не отправилось на мыло
+                $this->json(200, array(
+                    "code"=>200,
+                    'message'=>"Ошибка отправки сообщения",
+
+                ));
+            }//else
+
         }//if
         else{
 

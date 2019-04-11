@@ -22,17 +22,15 @@ class ApplicationController extends BaseController
         ]);
 
         MySQL::$db = new \PDO(
-            "mysql:dbname=stasdb;host=127.0.0.1;charset=utf8",
-            "root",
-            ""
-        );
-
-
+                    "mysql:dbname=tipprada_trippradardb;host=127.0.0.1;charset=utf8",
+                    "tipprada_trippradarUser",
+                    "trippradarUser123456"
+                );
 
         $router = new Router();
 
 
-        $routes = include_once '../Application/Models/AdminRoutes.php';
+        $routes = include_once '../Application/Models/PublicRoutes.php';
 
         $router->setNamespace('Application\\Controllers');
 
