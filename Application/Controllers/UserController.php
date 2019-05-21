@@ -15,17 +15,20 @@ use Bcrypt\Bcrypt;
 class UserController extends BaseController
 {
 
+
     public function RegisterUser(){
 
         $const = new Constants();
 
-        $userLogin = $this->request->GetPostValue("userLogin");
+        $userName = $this->request->GetPostValue("userName");
 
-        if(!preg_match($const->LoginPattern, $userLogin)){
+
+        if(!preg_match($const->NamesPattern, $userName)){
 
             $this->json(400, array(
                 'code'=>400,
-                'message'=>"Логин неверный",
+                'message'=>"UserName  incorrect",
+
             ));
 
             return;
@@ -37,7 +40,7 @@ class UserController extends BaseController
 
             $this->json(400, array(
                 'code'=>400,
-                'message'=>"Пароль не соответсвует"
+                'message'=>"UserPass incorrect"
             ));
 
             return;
@@ -48,7 +51,7 @@ class UserController extends BaseController
         if(!preg_match($const->EmailPattern, $userEmail)){
             $this->json(400, array(
                 'code'=>400,
-                'message'=>"Email не соответсвует"
+                'message'=>"UserEmail incorrect"
             ));
 
             return;
@@ -63,13 +66,13 @@ class UserController extends BaseController
 
         $typeUser = $const->typeUserRegister;
 
-        $result = $userService->AddUser($userEmail,$userLogin,null,$userPassword,$heshToken, $typeUser);
+        $result = $userService->AddUser($userEmail, $userName,$userPassword,$heshToken, $typeUser);
 
         if($result !== null){ //пользователь добавлен в БД
 
             $message = new MessageController();
 
-            $message->tuneTemplate($userLogin,$heshToken);
+            $message->tuneTemplate($userName,$heshToken);
             $mailres = mail($userEmail , $message->verificationSubject,$message->verificationTemplate,$message->header);
 
 
@@ -81,10 +84,9 @@ class UserController extends BaseController
                 ));
             }//if
             else{////если не отправилось на мыло
-                $this->json(200, array(
-                    "code"=>200,
+                $this->json(403, array(
+                    "code"=>403,
                     'message'=>"Ошибка отправки сообщения",
-
                 ));
             }//else
 
@@ -99,5 +101,42 @@ class UserController extends BaseController
         }//else
 
     }//RegisterUser
+
+    public function VerificationUser(){
+
+        $userService = new UserService();
+
+        $tokenUser = $this->request->GetGetValue('token');
+
+        $userResult = $userService->VerificationUsers($tokenUser);
+
+
+
+        if($userResult){
+            header('Location: ' . "http://design.rh-s.com");
+        }//if
+        else{
+            header('Location: ' . "http://google.com");
+        }
+
+    }//VerificationUser
+
+    public function AuthoriseUser(){
+
+        $userService = new UserService();
+
+        $userEmail = $this->request->GetGetValue('userEmail');
+        $userPass = $this->request->GetGetValue('userPass');
+
+        $resultAuth = $userService->AuthoriseUsers($userEmail, $userPass);
+
+        $this->json($resultAuth['code'],
+            [
+                'code'=>$resultAuth['code'],
+                'message'=>$resultAuth['message']
+            ]
+            );
+
+    }//AuthoriseUser
 
 }

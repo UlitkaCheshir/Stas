@@ -25,6 +25,6 @@ class MessageController
         $this->header .='X-Mailer: PHP/' . phpversion();
         $this->header .= "MIME-Version: 1.0\r\n";
         $this->header.="Content-type: text/html; charset=iso-8859-1\r\n";
-        $this->verificationTemplate = "<h3>$userName</h3> </br> <a href=http://tippradar.com/php/public/verification/?token=$hesh'>Confirm</a>";
+        $this->verificationTemplate = "<h3>$userName</h3> </br> <a href=http://tippradar.com/php/public/verification/?token=$hesh>Confirm</a>";
     }//
 }

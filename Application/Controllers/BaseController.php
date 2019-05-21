@@ -8,7 +8,7 @@
 
 namespace Application\Controllers;
 
-//use Application\Services\UserService;
+use Application\Service\UserService;
 use Application\Utils\Request;
 use Application\Utils\Storage;
 
@@ -25,19 +25,16 @@ abstract class BaseController
     protected $google_api_key;
 
     protected $redirect_url;
-//    protected $currentUser;
+    protected $currentUser;
 
     protected $clientGoogle;
 
     public function __construct(){
 
-//        $userService = new UserService();
-//
-//        $this->currentUser = $userService->getCurrentUser();
+        $userService = new UserService();
 
-
-
-
+        $this->currentUser = $userService->getCurrentUser();
+        
         $this->request = new Request();
         $this->storage = new Storage();
 
