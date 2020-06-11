@@ -22,7 +22,6 @@ class UserController extends BaseController
 
         $userName = $this->request->GetPostValue("userName");
 
-
         if(!preg_match($const->NamesPattern, $userName)){
 
             $this->json(400, array(
@@ -110,14 +109,12 @@ class UserController extends BaseController
 
         $userResult = $userService->VerificationUsers($tokenUser);
 
-
-
         if($userResult){
-            header('Location: ' . "http://design.rh-s.com");
+            header('Location: ' . "https://tippradar.com/");
         }//if
-        else{
-            header('Location: ' . "http://google.com");
-        }
+//        else{
+//            header('Location: ' . "http://google.com");
+//        }
 
     }//VerificationUser
 
@@ -133,7 +130,9 @@ class UserController extends BaseController
         $this->json($resultAuth['code'],
             [
                 'code'=>$resultAuth['code'],
-                'message'=>$resultAuth['message']
+                'message'=>$resultAuth['message'],
+                'mail'=>$userEmail,
+                'pass'=>$userPass
             ]
             );
 

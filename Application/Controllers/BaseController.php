@@ -34,7 +34,7 @@ abstract class BaseController
         $userService = new UserService();
 
         $this->currentUser = $userService->getCurrentUser();
-        
+
         $this->request = new Request();
         $this->storage = new Storage();
 

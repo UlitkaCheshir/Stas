@@ -94,7 +94,7 @@ class UserService
 
         $bcrypt = new Bcrypt();
 
-        $stm = MySQL::$db->prepare("SELECT id, isAdmin, userEmail, userPassword, verification 
+        $stm = MySQL::$db->prepare("SELECT id, isAdmin, userEmail, userPassword, verification, userName
                                     FROM users WHERE userEmail =:userEmail");
 
         $stm->bindParam(':userEmail', $userEmail, \PDO::PARAM_STR);
@@ -166,5 +166,27 @@ class UserService
 
     public function getCurrentUser(){
 
+        $user = null;
+
+        if(isset($_COOKIE['user'])){
+            $user = unserialize($_COOKIE['user']);
+        }
+        else if(isset($_COOKIE['admin'])){
+            $user = unserialize($_COOKIE['admin']);
+        }
+
+        return $user;
+    }//getCurrentUser
+
+    public function getSingleUser($userID){
+
+        $stm = MySQL::$db->prepare("SELECT id, isAdmin, userEmail, userPassword, verification, userName 
+                                    FROM users 
+                                    WHERE id= :userID");
+        $stm->bindParam(':userID', $userID, \PDO::PARAM_INT);
+
+        $stm->execute();
+
+        return $stm->fetch(\PDO::FETCH_OBJ);
     }
 }
